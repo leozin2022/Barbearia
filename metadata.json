@@ -1,0 +1,7 @@
+{
+  "name": "Barbearia Premium SaaS Template",
+  "description": "A high-end, responsive landing page for barbershops featuring before/after sliders, animated stats, and testimonial carousels, all driven by a single config object.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
