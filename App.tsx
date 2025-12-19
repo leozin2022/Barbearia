@@ -14,7 +14,9 @@ import {
   Menu,
   X,
   ShieldCheck,
-  User
+  User,
+  Home,
+  Info
 } from 'lucide-react';
 import { BARBER_CONFIG } from './config';
 import { Counter } from './components/Counter';
@@ -36,8 +38,8 @@ const App: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [heroIndex, setHeroIndex] = useState(0);
+  const [activeSection, setActiveSection] = useState('home');
   
-  // Usamos diretamente do config para garantir que o site nunca fique "preso" em cache antigo quebrado
   const services = BARBER_CONFIG.servicos;
 
   const heroTexts = [
@@ -48,7 +50,24 @@ const App: React.FC = () => {
   ];
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+      
+      // Detecção básica de seção ativa para o menu inferior
+      const sections = ['home', 'servicos', 'sobre', 'localizacao'];
+      const scrollPos = window.scrollY + 100;
+      
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element) {
+          const { offsetTop, offsetHeight } = element;
+          if (scrollPos >= offsetTop && scrollPos < offsetTop + offsetHeight) {
+            setActiveSection(section);
+          }
+        }
+      }
+    };
+
     window.addEventListener('scroll', handleScroll, { passive: true });
     
     const heroTimer = setInterval(() => {
@@ -80,7 +99,7 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-dark overflow-x-hidden selection:bg-gold selection:text-dark">
-      {/* Navigation */}
+      {/* Top Navigation */}
       <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${isScrolled ? 'bg-black/95 backdrop-blur-xl border-b border-gold/30 py-4 shadow-2xl' : 'bg-black/40 backdrop-blur-sm border-b border-white/5 py-6'}`}>
         <div className="container mx-auto px-6 flex justify-between items-center">
           <div className="flex items-center gap-4 flex-shrink-0 cursor-pointer" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
@@ -324,7 +343,7 @@ const App: React.FC = () => {
       </section>
 
       {/* Location Section */}
-      <section id="localizacao" className="py-32 bg-black scroll-mt-24">
+      <section id="localizacao" className="py-32 bg-black scroll-mt-24 pb-40 md:pb-32">
         <div className="container mx-auto px-6">
           <SectionTitle title="Onde Estamos" subtitle="Fácil Acesso" />
           <div className="grid md:grid-cols-2 gap-10 glass p-4 md:p-8 rounded-[3rem] border border-white/5 items-center">
@@ -356,7 +375,7 @@ const App: React.FC = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-24 bg-black border-t-2 border-gold/20">
+      <footer className="py-24 bg-black border-t-2 border-gold/20 pb-40 md:pb-24">
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-12 mb-20">
             <div className="flex items-center gap-4">
@@ -380,12 +399,65 @@ const App: React.FC = () => {
         </div>
       </footer>
 
-      {/* Floating Button */}
+      {/* Bottom Navigation (Mobile Only) */}
+      <motion.nav 
+        initial={{ y: 100 }}
+        animate={{ y: 0 }}
+        className="fixed bottom-0 left-0 right-0 z-[120] md:hidden px-6 pb-8 pointer-events-none"
+      >
+        <div className="glass h-20 rounded-[2rem] border border-gold/20 flex items-center justify-between px-8 pointer-events-auto shadow-[0_-20px_40px_rgba(0,0,0,0.5)]">
+          <button 
+            onClick={(e) => handleNavLinkClick(e as any, 'home')}
+            className={`flex flex-col items-center gap-1 transition-all ${activeSection === 'home' ? 'text-gold scale-110' : 'text-gray-500'}`}
+          >
+            <Home size={activeSection === 'home' ? 24 : 20} />
+            <span className="text-[9px] font-black uppercase tracking-widest">Início</span>
+          </button>
+          
+          <button 
+            onClick={(e) => handleNavLinkClick(e as any, 'servicos')}
+            className={`flex flex-col items-center gap-1 transition-all ${activeSection === 'servicos' ? 'text-gold scale-110' : 'text-gray-500'}`}
+          >
+            <Scissors size={activeSection === 'servicos' ? 24 : 20} />
+            <span className="text-[9px] font-black uppercase tracking-widest">Serviços</span>
+          </button>
+
+          {/* Central QR/Booking Circle */}
+          <div className="relative -mt-12">
+            <a 
+              href={waLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-16 h-16 bg-gradient-to-tr from-gold to-yellow-600 rounded-full flex items-center justify-center shadow-[0_10px_20px_rgba(212,175,55,0.4)] border-4 border-dark active:scale-90 transition-transform"
+            >
+              <MessageCircle size={28} className="text-dark" fill="currentColor" />
+            </a>
+          </div>
+
+          <button 
+            onClick={(e) => handleNavLinkClick(e as any, 'sobre')}
+            className={`flex flex-col items-center gap-1 transition-all ${activeSection === 'sobre' ? 'text-gold scale-110' : 'text-gray-500'}`}
+          >
+            <Info size={activeSection === 'sobre' ? 24 : 20} />
+            <span className="text-[9px] font-black uppercase tracking-widest">Sobre</span>
+          </button>
+
+          <button 
+            onClick={(e) => handleNavLinkClick(e as any, 'localizacao')}
+            className={`flex flex-col items-center gap-1 transition-all ${activeSection === 'localizacao' ? 'text-gold scale-110' : 'text-gray-500'}`}
+          >
+            <MapPin size={activeSection === 'localizacao' ? 24 : 20} />
+            <span className="text-[9px] font-black uppercase tracking-widest">Onde</span>
+          </button>
+        </div>
+      </motion.nav>
+
+      {/* Floating Button (Desktop Only or offset for Mobile) */}
       <a 
         href={waLink} 
         target="_blank" 
         rel="noopener noreferrer"
-        className="fixed bottom-8 right-8 z-[100] w-20 h-20 bg-[#25D366] text-white rounded-[2rem] flex items-center justify-center shadow-[0_20px_40px_rgba(37,211,102,0.4)] hover:scale-110 active:scale-95 transition-all group overflow-hidden border-2 border-white/20"
+        className="fixed bottom-8 right-8 z-[100] w-16 h-16 md:w-20 md:h-20 bg-[#25D366] text-white rounded-[2rem] hidden md:flex items-center justify-center shadow-[0_20px_40px_rgba(37,211,102,0.4)] hover:scale-110 active:scale-95 transition-all group overflow-hidden border-2 border-white/20"
       >
         <MessageCircle size={36} fill="currentColor" />
         <span className="absolute -top-1 -right-1 bg-red-600 text-[10px] font-black px-2 py-0.5 rounded-full border-2 border-white animate-pulse">VIP</span>
