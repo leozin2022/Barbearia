@@ -37,21 +37,8 @@ const App: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [heroIndex, setHeroIndex] = useState(0);
   
-  const [services] = useState(() => {
-    try {
-      const saved = localStorage.getItem('barber_services_custom');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          parsed[0].imagem = BARBER_CONFIG.servicos[0].imagem;
-          return parsed;
-        }
-      }
-    } catch (e) {
-      console.warn("Erro ao carregar dados locais", e);
-    }
-    return BARBER_CONFIG.servicos;
-  });
+  // Usamos diretamente do config para garantir que o site nunca fique "preso" em cache antigo quebrado
+  const services = BARBER_CONFIG.servicos;
 
   const heroTexts = [
     { main: "Estilo é a sua", highlight: "Identidade." },
