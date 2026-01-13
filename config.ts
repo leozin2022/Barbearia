@@ -9,6 +9,18 @@ export const BARBER_CONFIG = {
     clientes: 1800,
     anos: 10,
   },
+  transformacoes: [
+    {
+      id: 1,
+      antes: 'https://images.unsplash.com/photo-1599351431202-6e0c06e71501?auto=format&fit=crop&q=80&w=800',
+      depois: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&q=80&w=800'
+    },
+    {
+      id: 2,
+      antes: 'https://images.unsplash.com/photo-1552058544-f2b08422138a?auto=format&fit=crop&q=80&w=800',
+      depois: 'https://images.unsplash.com/photo-1567894340315-fae44c4d0751?auto=format&fit=crop&q=80&w=800'
+    }
+  ],
   depoimentos: [
     {
       nome: 'Ricardo Oliveira',

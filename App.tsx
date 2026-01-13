@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { BARBER_CONFIG } from './config';
 import { Counter } from './components/Counter';
+import { BeforeAfterSlider } from './components/BeforeAfterSlider';
 
 const SectionTitle: React.FC<{ title: string; subtitle: string }> = ({ title, subtitle }) => (
   <motion.div 
@@ -302,6 +303,26 @@ const App: React.FC = () => {
         </div>
       </section>
 
+      {/* Transformations Section */}
+      <section className="py-24 bg-dark relative border-t border-white/5">
+        <div className="container mx-auto px-6">
+          <SectionTitle title="Transformações" subtitle="Antes & Depois" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            {BARBER_CONFIG.transformacoes.map((item) => (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+              >
+                <BeforeAfterSlider antes={item.antes} depois={item.depois} />
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* About Section */}
       <section id="sobre" className="py-32 relative overflow-hidden scroll-mt-24">
         <div className="container mx-auto px-6 flex flex-col md:flex-row gap-20 items-center">
@@ -340,6 +361,44 @@ const App: React.FC = () => {
             </div>
           </div>
         </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section id="depoimentos" className="py-32 bg-black relative scroll-mt-24">
+         <div className="container mx-auto px-6">
+          <SectionTitle title="O Que Dizem" subtitle="Depoimentos" />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {BARBER_CONFIG.depoimentos.map((depoimento, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+                className="glass p-8 rounded-3xl border border-white/5 relative group hover:border-gold/30 transition-colors"
+              >
+                <div className="absolute -top-4 -right-4 text-gold/20 group-hover:text-gold/40 transition-colors">
+                  <MessageCircle size={48} />
+                </div>
+
+                <div className="flex items-center gap-4 mb-6">
+                  <img src={depoimento.avatar} alt={depoimento.nome} className="w-12 h-12 rounded-full border-2 border-gold/50" />
+                  <div>
+                    <h5 className="font-bold font-serif text-lg">{depoimento.nome}</h5>
+                    <div className="flex text-gold text-xs">
+                      {[...Array(depoimento.nota)].map((_, i) => (
+                        <Star key={i} size={12} fill="currentColor" />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <p className="text-gray-400 text-sm leading-relaxed italic">"{depoimento.comentario}"</p>
+              </motion.div>
+            ))}
+          </div>
+         </div>
       </section>
 
       {/* Location Section */}
